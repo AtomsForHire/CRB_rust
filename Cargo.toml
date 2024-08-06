@@ -6,4 +6,6 @@ edition = "2021"
 [dependencies]
 ndarray = "0.16.0"
 ndarray-linalg = "0.16.0"
+serde = {version = "1.0.204", features = ["derive"]}
+serde_yaml = "0.9.34"
 yaml-rust2 = "0.8.1"
