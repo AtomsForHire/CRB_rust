@@ -6,12 +6,14 @@ version = 3
 name = "CRB_rust"
 version = "0.1.0"
 dependencies = [
+ "itertools 0.13.0",
  "marlu",
  "ndarray 0.16.0",
  "ndarray-linalg",
  "rayon",
  "serde",
  "serde_yaml",
+ "strum",
  "yaml-rust2",
 ]
 
@@ -458,6 +460,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "itertools"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -622,7 +633,7 @@ dependencies = [
  "fitsio-sys",
  "flate2",
  "hifitime",
- "itertools",
+ "itertools 0.10.5",
  "lazy_static",
  "log",
  "mwalib",
@@ -1033,6 +1044,12 @@ name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
+name = "strum"
+version = "0.26.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8fec0f0aef304996cf250b31b5a10dee7980c85da9d759361292b8bca5a18f06"
 
 [[package]]
 name = "syn"
