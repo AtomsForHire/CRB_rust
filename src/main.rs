@@ -5,6 +5,7 @@ use std::io;
 mod config;
 use crate::config::Config;
 use crate::srclist::read;
+use srclist::*;
 use std::fs;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -16,9 +17,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let file = fs::File::open(&config.srclist)?;
     let mut buf_reader = io::BufReader::new(file);
-    let source_list = read::source_list_from_yaml(&mut buf_reader);
+    let source_list: SourceList = read::source_list_from_yaml(&mut buf_reader)?;
 
-    println!("{:?}", &source_list);
+    let mut component_list: ComponentList = ComponentList::new(source_list);
+
+    for comp in component_list.iter() {
+        println!("{:?}", comp);
+    }
 
     return Ok(());
 }
