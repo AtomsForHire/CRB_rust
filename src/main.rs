@@ -1,7 +1,11 @@
+mod srclist;
 use std::env;
 use std::error::Error;
+use std::io;
 mod config;
 use crate::config::Config;
+use crate::srclist::read;
+use std::fs;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -9,6 +13,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let config: Config = Config::read_config(&args[1])?;
     println!("YAML: {:?}", config);
+
+    let file = fs::File::open(&config.srclist)?;
+    let mut buf_reader = io::BufReader::new(file);
+    let source_list = read::source_list_from_yaml(&mut buf_reader);
+
+    println!("{:?}", &source_list);
 
     return Ok(());
 }
