@@ -1,7 +1,7 @@
 //! An alternative to ['SourceList'] (not the hyperdrive implementation).
 //! Follows the original python implementation of the CRB code a bit more.
 
-use super::{SourceComponent, SourceList};
+use super::{FluxDensity, FluxDensityType, SourceComponent, SourceList};
 
 use std::ops::{Deref, DerefMut};
 
@@ -22,6 +22,21 @@ impl ComponentList {
         }
 
         return ComponentList(component_list);
+    }
+
+    /// Veto sources by the minimum flux
+    pub(crate) fn veto_by_flux(&mut self, noise: f64) {
+        self.retain(|comp| match comp.flux_type {
+            FluxDensityType::PowerLaw {
+                fd: FluxDensity { i, .. },
+                ..
+            } => return i > noise,
+            FluxDensityType::CurvedPowerLaw {
+                fd: FluxDensity { i, .. },
+                ..
+            } => return i > noise,
+            FluxDensityType::List { .. } => return true,
+        });
     }
 }
 
