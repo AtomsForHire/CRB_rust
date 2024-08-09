@@ -4,7 +4,7 @@
 use super::{FluxDensity, FluxDensityType, SourceComponent, SourceList};
 use marlu::{RADec, LMN};
 
-use std::ops::{Deref, DerefMut};
+use std::ops::{Deref, DerefMut, Index, IndexMut};
 
 #[derive(Clone, Debug)]
 pub struct ComponentList(Vec<SourceComponent>);
@@ -42,16 +42,21 @@ impl ComponentList {
 
     /// Veto sources by fov
     pub(crate) fn veto_by_fov(&mut self, phase_centre: RADec, lambda: f64, D: f64) {
-        self.retain(|comp| {
+        println!("fov: {}", (lambda / (D * 2.0f64)).sin());
+        return self.retain(|comp| {
             let fov = lambda / D;
             let lmn = comp.radec.to_lmn(phase_centre);
 
-            if (lmn.l.powi(2) + lmn.m.powi(2)).sqrt() > fov {
-                return false;
-            } else {
+            if (lmn.l.powi(2) + lmn.m.powi(2)).sqrt() < (fov / 2.0f64).sin() {
                 return true;
+            } else {
+                return false;
             }
         });
+    }
+
+    pub(crate) fn slice_to_struct(&self, range: std::ops::Range<usize>) -> Self {
+        Self(self.0[range].to_vec())
     }
 }
 
@@ -67,5 +72,19 @@ impl Deref for ComponentList {
 impl DerefMut for ComponentList {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
+    }
+}
+
+impl Index<std::ops::Range<usize>> for ComponentList {
+    type Output = [SourceComponent];
+
+    fn index(&self, index: std::ops::Range<usize>) -> &Self::Output {
+        &self.0[index]
+    }
+}
+
+impl IndexMut<std::ops::Range<usize>> for ComponentList {
+    fn index_mut(&mut self, index: std::ops::Range<usize>) -> &mut Self::Output {
+        &mut self.0[index]
     }
 }

@@ -24,6 +24,28 @@ pub struct SourceComponent {
     pub flux_type: FluxDensityType,
 }
 
+impl SourceComponent {
+    /// Estimate the flux density of this component at a frequency.
+    pub(crate) fn estimate_at_freq(&self, freq_hz: f64) -> FluxDensity {
+        self.flux_type.estimate_at_freq(freq_hz)
+    }
+
+    /// Is this component a point source?
+    pub(crate) fn is_point(&self) -> bool {
+        self.comp_type.is_point()
+    }
+
+    /// Is this component a gaussian source?
+    pub(crate) fn is_gaussian(&self) -> bool {
+        self.comp_type.is_gaussian()
+    }
+
+    /// Is this component a shapelet source?
+    pub(crate) fn is_shapelet(&self) -> bool {
+        self.comp_type.is_shapelet()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum ComponentType {
