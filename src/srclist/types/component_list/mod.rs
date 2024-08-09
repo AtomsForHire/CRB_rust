@@ -2,6 +2,7 @@
 //! Follows the original python implementation of the CRB code a bit more.
 
 use super::{FluxDensity, FluxDensityType, SourceComponent, SourceList};
+use marlu::{RADec, LMN};
 
 use std::ops::{Deref, DerefMut};
 
@@ -35,7 +36,21 @@ impl ComponentList {
                 fd: FluxDensity { i, .. },
                 ..
             } => return i > noise,
-            FluxDensityType::List { .. } => return true,
+            FluxDensityType::List { .. } => return false,
+        });
+    }
+
+    /// Veto sources by fov
+    pub(crate) fn veto_by_fov(&mut self, phase_centre: RADec, lambda: f64, D: f64) {
+        self.retain(|comp| {
+            let fov = lambda / D;
+            let lmn = comp.radec.to_lmn(phase_centre);
+
+            if (lmn.l.powi(2) + lmn.m.powi(2)).sqrt() > fov {
+                return false;
+            } else {
+                return true;
+            }
         });
     }
 }
